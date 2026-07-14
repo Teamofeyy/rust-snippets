@@ -2,7 +2,12 @@ id = "rust-workflow-snippets"
 name = "Rust Workflow Snippets"
 version = "0.1.0"
 schema_version = 1
-authors = ["Bobby Mannino <manninobobby@icloud.com>", "Teamofeyy <timarnd06@gmail.com>"]
+
+authors = [
+  "Teamofeyy <timarnd06@gmail.com>",
+]
+
 description = "Practical Rust snippets for async development, error handling, serialization, tracing, testing, and common production workflows."
 repository = "https://github.com/Teamofeyy/rust-snippets"
+
 snippets = "./snippets/rust.json"
