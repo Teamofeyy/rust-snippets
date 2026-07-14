@@ -1,92 +1,539 @@
 {
-  "Initialize an immutable vec": {
-    "prefix": "let-vec",
-    "description": "Initialize an empty immutable empty vec",
-    "body": ["let ${1:vec} = vec![$2];"]
-  },
-  "Initialize a mutable vec": {
-    "prefix": "mut-vec",
-    "description": "Initialize an empty mutable empty vec",
-    "body": ["let mut ${1:vec} = vec![$2];"]
-  },
-  "Match an option": {
-    "prefix": "match-option",
-    "description": "Match an option statement",
+  "Function returning Result": {
+    "prefix": "fn-result",
+    "description": "Create a function returning Result",
     "body": [
-      "match ${1:option} {",
-      "  Some(value) => { $2 }",
-      "  None => { $3 }",
+      "fn ${1:name}(${2}) -> Result<${3:()}, ${4:Error}> {",
+      "  $0",
+      "  Ok(())",
       "}"
     ]
   },
-  "Match a result": {
-    "prefix": "match-result",
-    "description": "Match a result statement",
+  "Public function returning Result": {
+    "prefix": "pub-fn-result",
+    "description": "Create a public function returning Result",
     "body": [
-      "match ${1:result} {",
-      "  Ok(value) => { $2 }",
-      "  Err(error) => { $3 }",
+      "pub fn ${1:name}(${2}) -> Result<${3:()}, ${4:Error}> {",
+      "  $0",
+      "  Ok(())",
       "}"
     ]
   },
-  "If let some": {
-    "prefix": "if-some",
-    "description": "If let Some pattern matching",
-    "body": ["if let Some(${1:value}) = ${2:option} {", "  $3", "}"]
-  },
-  "Clone struct": {
-    "prefix": "clone-struct",
-    "description": "Clone a struct",
+  "Async function returning Result": {
+    "prefix": "async-fn-result",
+    "description": "Create an async function returning Result",
     "body": [
-      "#[derive(Clone)]",
-      "struct ${1:Name} {",
-      "  ${2:field}: ${3:Type},",
+      "async fn ${1:name}(${2}) -> Result<${3:()}, ${4:Error}> {",
+      "  $0",
+      "  Ok(())",
       "}"
     ]
   },
-  "Debug struct": {
-    "prefix": "debug-struct",
-    "description": "Debug struct",
+  "Public async function returning Result": {
+    "prefix": "pub-async-fn-result",
+    "description": "Create a public async function returning Result",
     "body": [
-      "#[derive(Debug)]",
-      "struct ${1:Name} {",
-      "  ${2:field}: ${3:Type},",
+      "pub async fn ${1:name}(${2}) -> Result<${3:()}, ${4:Error}> {",
+      "  $0",
+      "  Ok(())",
       "}"
     ]
   },
-  "Clone and debug struct": {
-    "prefix": "clone-debug-struct",
-    "description": "Clone and debug struct",
+  "Anyhow function": {
+    "prefix": "fn-anyhow",
+    "description": "Create a function returning anyhow Result",
     "body": [
-      "#[derive(Clone, Debug)]",
-      "struct ${1:Name} {",
-      "  ${2:field}: ${3:Type},",
+      "fn ${1:name}(${2}) -> anyhow::Result<${3:()}> {",
+      "  $0",
+      "  Ok(())",
       "}"
     ]
   },
-  "Windows only derive": {
-    "prefix": "win-only",
-    "description": "A Windows only derive",
-    "body": ["#[cfg(target_os = \"windows\")]"]
+  "Async anyhow function": {
+    "prefix": "async-fn-anyhow",
+    "description": "Create an async function returning anyhow Result",
+    "body": [
+      "async fn ${1:name}(${2}) -> anyhow::Result<${3:()}> {",
+      "  $0",
+      "  Ok(())",
+      "}"
+    ]
   },
-  "MacOS only derive": {
-    "prefix": "mac-only",
-    "description": "A MacOS only derive",
-    "body": ["#[cfg(target_os = \"macos\")]"]
+  "Tokio main": {
+    "prefix": "tokio-main",
+    "description": "Create a Tokio async main function",
+    "body": [
+      "#[tokio::main]",
+      "async fn main() -> anyhow::Result<()> {",
+      "  $0",
+      "  Ok(())",
+      "}"
+    ]
   },
-  "Linux only derive": {
-    "prefix": "linux-only",
-    "description": "A Linux only derive",
-    "body": ["#[cfg(target_os = \"linux\")]"]
+  "Tokio test": {
+    "prefix": "tokio-test",
+    "description": "Create an asynchronous Tokio test",
+    "body": [
+      "#[tokio::test]",
+      "async fn ${1:test_name}() {",
+      "  $0",
+      "}"
+    ]
   },
-  "iOS only derive": {
-    "prefix": "ios-only",
-    "description": "An iOS only derive",
-    "body": ["#[cfg(target_os = \"ios\")]"]
+  "Tokio test returning Result": {
+    "prefix": "tokio-test-result",
+    "description": "Create an asynchronous Tokio test returning Result",
+    "body": [
+      "#[tokio::test]",
+      "async fn ${1:test_name}() -> anyhow::Result<()> {",
+      "  $0",
+      "  Ok(())",
+      "}"
+    ]
   },
-  "Android only derive": {
-    "prefix": "android-only",
-    "description": "An Android only derive",
-    "body": ["#[cfg(target_os = \"android\")]"]
+  "Tokio spawn task": {
+    "prefix": "tokio-spawn",
+    "description": "Spawn an asynchronous Tokio task",
+    "body": [
+      "let ${1:handle} = tokio::spawn(async move {",
+      "  $0",
+      "});"
+    ]
+  },
+  "Tokio spawn blocking": {
+    "prefix": "tokio-spawn-blocking",
+    "description": "Run a blocking operation using Tokio",
+    "body": [
+      "let ${1:result} = tokio::task::spawn_blocking(move || {",
+      "  $0",
+      "})",
+      ".await??;"
+    ]
+  },
+  "Tokio select": {
+    "prefix": "tokio-select",
+    "description": "Create a tokio select block",
+    "body": [
+      "tokio::select! {",
+      "  ${1:value} = ${2:future} => {",
+      "    ${3}",
+      "  }",
+      "  _ = ${4:shutdown} => {",
+      "    $0",
+      "  }",
+      "}"
+    ]
+  },
+  "Tokio timeout": {
+    "prefix": "tokio-timeout",
+    "description": "Run a future with a timeout",
+    "body": [
+      "let ${1:result} = tokio::time::timeout(",
+      "  std::time::Duration::from_${2:secs}(${3:30}),",
+      "  ${4:future},",
+      ")",
+      ".await??;"
+    ]
+  },
+  "Tokio sleep": {
+    "prefix": "tokio-sleep",
+    "description": "Sleep asynchronously using Tokio",
+    "body": [
+      "tokio::time::sleep(std::time::Duration::from_${1:secs}(${2:1})).await;"
+    ]
+  },
+  "Tokio interval loop": {
+    "prefix": "tokio-interval",
+    "description": "Create a Tokio interval loop",
+    "body": [
+      "let mut ${1:interval} = tokio::time::interval(",
+      "  std::time::Duration::from_${2:secs}(${3:1}),",
+      ");",
+      "",
+      "loop {",
+      "  ${1:interval}.tick().await;",
+      "  $0",
+      "}"
+    ]
+  },
+  "Tokio MPSC channel": {
+    "prefix": "tokio-mpsc",
+    "description": "Create a Tokio MPSC channel",
+    "body": [
+      "let (${1:tx}, mut ${2:rx}) = tokio::sync::mpsc::channel::<${3:Message}>(${4:32});"
+    ]
+  },
+  "Tokio oneshot channel": {
+    "prefix": "tokio-oneshot",
+    "description": "Create a Tokio oneshot channel",
+    "body": [
+      "let (${1:tx}, ${2:rx}) = tokio::sync::oneshot::channel::<${3:Message}>();"
+    ]
+  },
+  "Tokio watch channel": {
+    "prefix": "tokio-watch",
+    "description": "Create a Tokio watch channel",
+    "body": [
+      "let (${1:tx}, mut ${2:rx}) = tokio::sync::watch::channel(${3:initial_value});"
+    ]
+  },
+  "Thiserror enum": {
+    "prefix": "thiserror",
+    "description": "Create an error enum using thiserror",
+    "body": [
+      "#[derive(Debug, thiserror::Error)]",
+      "pub enum ${1:Error} {",
+      "  #[error(\"${2:error message}\")]",
+      "  ${3:Variant},",
+      "",
+      "  #[error(\"${4:operation failed}: {source}\")]",
+      "  ${5:Source} {",
+      "    #[source]",
+      "    source: ${6:anyhow::Error},",
+      "  },",
+      "}"
+    ]
+  },
+  "Thiserror transparent variant": {
+    "prefix": "error-transparent",
+    "description": "Create a transparent thiserror variant",
+    "body": [
+      "#[error(transparent)]",
+      "${1:Variant}(#[from] ${2:Error}),"
+    ]
+  },
+  "Thiserror source variant": {
+    "prefix": "error-source",
+    "description": "Create a thiserror variant with a source error",
+    "body": [
+      "#[error(\"${1:operation failed}: {source}\")]",
+      "${2:Variant} {",
+      "  #[source]",
+      "  source: ${3:Error},",
+      "},"
+    ]
+  },
+  "Serde struct": {
+    "prefix": "serde-struct",
+    "description": "Create a serializable and deserializable struct",
+    "body": [
+      "#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]",
+      "pub struct ${1:Name} {",
+      "  pub ${2:field}: ${3:Type},",
+      "}"
+    ]
+  },
+  "Serde default struct": {
+    "prefix": "serde-default-struct",
+    "description": "Create a Serde struct implementing Default",
+    "body": [
+      "#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]",
+      "pub struct ${1:Name} {",
+      "  #[serde(default)]",
+      "  pub ${2:field}: ${3:Type},",
+      "}"
+    ]
+  },
+  "Serde tagged enum": {
+    "prefix": "serde-tagged-enum",
+    "description": "Create an internally tagged Serde enum",
+    "body": [
+      "#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]",
+      "#[serde(tag = \"${1:type}\", rename_all = \"${2:snake_case}\")]",
+      "pub enum ${3:Name} {",
+      "  ${4:Variant} {",
+      "    ${5:field}: ${6:Type},",
+      "  },",
+      "}"
+    ]
+  },
+  "Serde rename field": {
+    "prefix": "serde-rename",
+    "description": "Rename a field during Serde serialization",
+    "body": [
+      "#[serde(rename = \"${1:name}\")]"
+    ]
+  },
+  "Serde skip serializing none": {
+    "prefix": "serde-skip-none",
+    "description": "Skip serializing an Option when it is None",
+    "body": [
+      "#[serde(skip_serializing_if = \"Option::is_none\")]"
+    ]
+  },
+  "Tracing instrument": {
+    "prefix": "tracing-instrument",
+    "description": "Instrument a function using tracing",
+    "body": [
+      "#[tracing::instrument(skip(${1:self}), fields(${2}))]"
+    ]
+  },
+  "Tracing instrument all": {
+    "prefix": "tracing-instrument-all",
+    "description": "Instrument a function and skip all arguments",
+    "body": [
+      "#[tracing::instrument(skip_all, fields(${1}))]"
+    ]
+  },
+  "Tracing info": {
+    "prefix": "tracing-info",
+    "description": "Create a structured tracing info event",
+    "body": [
+      "tracing::info!(",
+      "  ${1:field} = %${2:value},",
+      "  \"${3:operation completed}\"",
+      ");"
+    ]
+  },
+  "Tracing debug": {
+    "prefix": "tracing-debug",
+    "description": "Create a structured tracing debug event",
+    "body": [
+      "tracing::debug!(",
+      "  ${1:field} = ?${2:value},",
+      "  \"${3:debug message}\"",
+      ");"
+    ]
+  },
+  "Tracing warn": {
+    "prefix": "tracing-warn",
+    "description": "Create a structured tracing warning event",
+    "body": [
+      "tracing::warn!(",
+      "  ${1:field} = %${2:value},",
+      "  \"${3:warning message}\"",
+      ");"
+    ]
+  },
+  "Tracing error": {
+    "prefix": "tracing-error",
+    "description": "Create a structured tracing error event",
+    "body": [
+      "tracing::error!(",
+      "  error = %${1:error},",
+      "  \"${2:operation failed}\"",
+      ");"
+    ]
+  },
+  "Tracing error with debug chain": {
+    "prefix": "tracing-error-debug",
+    "description": "Log an error using Display and Debug representations",
+    "body": [
+      "tracing::error!(",
+      "  error = %${1:error},",
+      "  error_debug = ?${1:error},",
+      "  \"${2:operation failed}\"",
+      ");"
+    ]
+  },
+  "Display implementation": {
+    "prefix": "impl-display",
+    "description": "Implement std fmt Display",
+    "body": [
+      "impl std::fmt::Display for ${1:Type} {",
+      "  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {",
+      "    write!(f, \"${2:{}}\", ${3:self})",
+      "  }",
+      "}"
+    ]
+  },
+  "FromStr implementation": {
+    "prefix": "impl-from-str",
+    "description": "Implement std str FromStr",
+    "body": [
+      "impl std::str::FromStr for ${1:Type} {",
+      "  type Err = ${2:Error};",
+      "",
+      "  fn from_str(value: &str) -> Result<Self, Self::Err> {",
+      "    $0",
+      "  }",
+      "}"
+    ]
+  },
+  "TryFrom implementation": {
+    "prefix": "impl-try-from",
+    "description": "Implement TryFrom for a type",
+    "body": [
+      "impl TryFrom<${1:Source}> for ${2:Target} {",
+      "  type Error = ${3:Error};",
+      "",
+      "  fn try_from(value: ${1:Source}) -> Result<Self, Self::Error> {",
+      "    $0",
+      "  }",
+      "}"
+    ]
+  },
+  "AsRef implementation": {
+    "prefix": "impl-as-ref",
+    "description": "Implement AsRef for a type",
+    "body": [
+      "impl AsRef<${1:Target}> for ${2:Type} {",
+      "  fn as_ref(&self) -> &${1:Target} {",
+      "    $0",
+      "  }",
+      "}"
+    ]
+  },
+  "Default implementation": {
+    "prefix": "impl-default",
+    "description": "Implement Default manually",
+    "body": [
+      "impl Default for ${1:Type} {",
+      "  fn default() -> Self {",
+      "    Self {",
+      "      $0",
+      "    }",
+      "  }",
+      "}"
+    ]
+  },
+  "Builder method": {
+    "prefix": "builder-method",
+    "description": "Create a consuming builder method",
+    "body": [
+      "pub fn ${1:with_field}(mut self, ${2:value}: ${3:Type}) -> Self {",
+      "  self.${4:field} = ${2:value};",
+      "  self",
+      "}"
+    ]
+  },
+  "Async trait": {
+    "prefix": "async-trait",
+    "description": "Create an async trait using async-trait",
+    "body": [
+      "#[async_trait::async_trait]",
+      "pub trait ${1:Trait}: Send + Sync {",
+      "  async fn ${2:method}(&self, ${3}) -> Result<${4:()}, ${5:Error}>;",
+      "}"
+    ]
+  },
+  "Async trait implementation": {
+    "prefix": "impl-async-trait",
+    "description": "Implement an async trait using async-trait",
+    "body": [
+      "#[async_trait::async_trait]",
+      "impl ${1:Trait} for ${2:Type} {",
+      "  async fn ${3:method}(&self, ${4}) -> Result<${5:()}, ${6:Error}> {",
+      "    $0",
+      "  }",
+      "}"
+    ]
+  },
+  "Clap parser": {
+    "prefix": "clap-parser",
+    "description": "Create a Clap command line parser",
+    "body": [
+      "#[derive(Debug, clap::Parser)]",
+      "#[command(version, about)]",
+      "pub struct ${1:Cli} {",
+      "  #[arg(long, env = \"${2:ENV_NAME}\")]",
+      "  pub ${3:field}: ${4:String},",
+      "}"
+    ]
+  },
+  "Clap subcommand enum": {
+    "prefix": "clap-subcommand",
+    "description": "Create a Clap subcommand enum",
+    "body": [
+      "#[derive(Debug, clap::Subcommand)]",
+      "pub enum ${1:Command} {",
+      "  ${2:Run} {",
+      "    #[arg(long)]",
+      "    ${3:field}: ${4:String},",
+      "  },",
+      "}"
+    ]
+  },
+  "Cargo feature": {
+    "prefix": "cfg-feature",
+    "description": "Compile an item only when a Cargo feature is enabled",
+    "body": [
+      "#[cfg(feature = \"${1:feature}\")]"
+    ]
+  },
+  "Cargo feature module": {
+    "prefix": "cfg-feature-mod",
+    "description": "Declare a module behind a Cargo feature",
+    "body": [
+      "#[cfg(feature = \"${1:feature}\")]",
+      "mod ${2:module};"
+    ]
+  },
+  "Cargo feature public module": {
+    "prefix": "cfg-feature-pub-mod",
+    "description": "Declare a public module behind a Cargo feature",
+    "body": [
+      "#[cfg(feature = \"${1:feature}\")]",
+      "pub mod ${2:module};"
+    ]
+  },
+  "Test returning Result": {
+    "prefix": "test-result",
+    "description": "Create a synchronous test returning Result",
+    "body": [
+      "#[test]",
+      "fn ${1:test_name}() -> anyhow::Result<()> {",
+      "  $0",
+      "  Ok(())",
+      "}"
+    ]
+  },
+  "Proptest test": {
+    "prefix": "proptest",
+    "description": "Create a property test using proptest",
+    "body": [
+      "proptest::proptest! {",
+      "  #[test]",
+      "  fn ${1:test_name}(${2:value} in ${3:any::<String>()}) {",
+      "    $0",
+      "  }",
+      "}"
+    ]
+  },
+  "Temporary directory test": {
+    "prefix": "tempdir",
+    "description": "Create a temporary directory using tempfile",
+    "body": [
+      "let ${1:temp_dir} = tempfile::tempdir()?;",
+      "let ${2:path} = ${1:temp_dir}.path();"
+    ]
+  },
+  "Environment variable required": {
+    "prefix": "env-required",
+    "description": "Read a required environment variable",
+    "body": [
+      "let ${1:value} = std::env::var(\"${2:ENV_NAME}\")",
+      "  .map_err(|_| anyhow::anyhow!(\"${2:ENV_NAME} is not set\"))?;"
+    ]
+  },
+  "Read file asynchronously": {
+    "prefix": "tokio-read-file",
+    "description": "Read an entire file asynchronously",
+    "body": [
+      "let ${1:contents} = tokio::fs::read(${2:path}).await?;"
+    ]
+  },
+  "Write file asynchronously": {
+    "prefix": "tokio-write-file",
+    "description": "Write a file asynchronously",
+    "body": [
+      "tokio::fs::write(${1:path}, ${2:contents}).await?;"
+    ]
+  },
+  "Create directory asynchronously": {
+    "prefix": "tokio-create-dir",
+    "description": "Create a directory and all parent directories",
+    "body": [
+      "tokio::fs::create_dir_all(${1:path}).await?;"
+    ]
+  },
+  "Graceful shutdown signal": {
+    "prefix": "tokio-shutdown",
+    "description": "Wait for Ctrl C using Tokio",
+    "body": [
+      "tokio::signal::ctrl_c()",
+      "  .await",
+      "  .expect(\"failed to listen for Ctrl+C\");"
+    ]
   }
 }
